@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>恋爱计时器</title>
+    <style>
+
+        html {
+            background-color: #00000000;
+            cursor: pointer;
+        }
+        #description {
+            color: #b9b9b9;
+            text-align: center;
+			-webkit-app-region: drag;
+        }
+        #time {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            color: #ff9191;
+			-webkit-app-region: drag;
+        }
+    </style>
+    
+</head>
+<body>
+    <div id="description">李帅哥&徐美女相遇、相识、相依的第：</div>
+    <div id="time"/>
+    <script>
+        function countTime(time,id) {
+                var date = new Date();
+                var now = date.getTime();               
+                var startDate = new Date(time);//设置开始时间
+                var start = startDate.getTime();
+                var leftTime = now - start; //时间差                              
+                var d, h, m, s, ms;
+                d = Math.floor(leftTime / 1000 / 60 / 60 / 24);
+                h = Math.floor(leftTime / 1000 / 60 / 60 % 24);
+                m = Math.floor(leftTime / 1000 / 60 % 60);
+                s = Math.floor(leftTime / 1000 % 60);
+                ms = Math.floor(leftTime % 1000);
+                // if(ms < 10) {
+                //     ms = "00" + ms;
+                // } else if(ms < 100) {
+                //     ms = "0" + ms;
+                // }
+                
+                if(s < 10) {
+                    s = "0" + s;
+                }
+                if(m < 10) {
+                    m = "0" + m;
+                }
+                if(h < 10) {
+                    h = "0" + h;
+                }
+                //将时间赋值到div中
+                document.getElementById(id).innerHTML = d + "天" + h + "时" + m + "分" + s + "秒"//+  ms + "毫秒";
+               return leftTime
+            }
+            var s = setInterval(function (){
+                   var dates =  countTime("2021/6/26 19:00:00", "time");
+            },5)
+    </script>
+    <script>
+              //鼠标点击出现爱心特效
+		(function(window,document,undefined){
+			var hearts = [];
+			window.requestAnimationFrame = (function(){
+				return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				window.oRequestAnimationFrame ||
+				window.msRequestAnimationFrame ||
+				function (callback){
+					setTimeout(callback,1000/60);
+				}
+			})();
+			init();
+			function init(){
+				css(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+				attachEvent();
+				gameloop();
+			}
+			function gameloop(){
+				for(var i=0;i<hearts.length;i++){
+					if(hearts[i].alpha <=0){
+						document.body.removeChild(hearts[i].el);
+						hearts.splice(i,1);
+						continue;
+					}
+					hearts[i].y--;
+					hearts[i].scale += 0.004;
+					hearts[i].alpha -= 0.013;
+					hearts[i].el.style.cssText = "left:"+hearts[i].x+"px;top:"+hearts[i].y+"px;opacity:"+hearts[i].alpha+";transform:scale("+hearts[i].scale+","+hearts[i].scale+") rotate(45deg);background:"+hearts[i].color;
+				}
+				requestAnimationFrame(gameloop);
+			}
+			function attachEvent(){
+				var old = typeof document.getElementsByTagName("html")[0].onclick==="function" && document.getElementsByTagName("html")[0].onclick;
+				document.getElementsByTagName("html")[0].onclick = function(event){
+					old && old();
+					createHeart(event);
+				}
+			}
+			function createHeart(event){
+				var d = document.createElement("div");
+				d.className = "heart";
+				hearts.push({
+					el : d,
+					x : event.clientX - 5,
+					y : event.clientY - 5,
+					scale : 1,
+					alpha : 1,
+					color : randomColor()
+				});
+				document.body.appendChild(d);
+			}
+			function css(css){
+				var style = document.createElement("style");
+				style.type="text/css";
+				try{
+					style.appendChild(document.createTextNode(css));
+				}catch(ex){
+					style.styleSheet.cssText = css;
+				}
+				document.getElementsByTagName('head')[0].appendChild(style);
+			}
+			function randomColor(){
+				return "rgb("+(~~(Math.random()*255))+","+(~~(Math.random()*255))+","+(~~(Math.random()*255))+")";
+			}
+		})(window,document);
+    </script>
+</body>
+</html>
